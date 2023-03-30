@@ -1,0 +1,41 @@
+import sys
+
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QApplication
+from variables import WINDOW_ICON_PATH
+from main_window import MainWindow
+from display import Display
+from info import Info
+from styles import setupTheme
+from buttons import ButtonsGrid
+
+
+if __name__ == '__main__':
+    if sys.platform.startswith('win'):
+        import ctypes
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
+            u'CompanyName.ProductName.SubProduct.VersionInformation')  # Arbitrary string
+
+    # Create app
+    app = QApplication(sys.argv)
+    setupTheme()
+    window = MainWindow()
+    
+    # Define icon
+    icon = QIcon(str(WINDOW_ICON_PATH))
+    window.setWindowIcon(icon)
+    app.setWindowIcon(icon)
+
+    info = Info('Sua conta')
+    window.addWidgetToVLayout(info)
+
+    display = Display()
+    window.addWidgetToVLayout(display)
+
+    buttonsGrid = ButtonsGrid(display, info, window)
+    window.vLayout.addLayout(buttonsGrid)
+
+    # Execute
+    window.adjustFixedSize()
+    window.show()
+    app.exec()
